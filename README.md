@@ -1,6 +1,7 @@
 # Indroduction
-Use claude_100k api to run autogpt 0.3.1
 ![demo](demo.gif)
+Use claude_100k api to run [autogpt 0.3.1](https://github.com/Significant-Gravitas/Auto-GPT)
+
 
 # Qiuck start
 1. clone this repo
