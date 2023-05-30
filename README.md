@@ -10,4 +10,4 @@ Use claude_100k api to run autogpt 0.3.1
 
 
 # Thanks
-Thank  [LostAbaddon/AutoClaude] :(https://github.com/LostAbaddon/AutoClaude),I use your code to change autogpt 0.3.1 
+Thank[LostAbaddon/AutoClaude:](https://github.com/LostAbaddon/AutoClaude),I use your code to change autogpt 0.3.1 
