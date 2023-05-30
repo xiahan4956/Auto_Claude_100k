@@ -1,6 +1,6 @@
 # Indroduction
 ![demo](demo.gif)
-Use claude_100k api to run [autogpt 0.3.1](https://github.com/Significant-Gravitas/Auto-GPT)
+**Use claude_100k api to run [autogpt 0.3.1](https://github.com/Significant-Gravitas/Auto-GPT)**
 
 
 # Qiuck start
@@ -11,4 +11,4 @@ Use claude_100k api to run [autogpt 0.3.1](https://github.com/Significant-Gravit
 
 
 # Thanks
-Thank [LostAbaddon/AutoClaude](https://github.com/LostAbaddon/AutoClaude),I use your code to change autogpt 0.3.1.Your code very help me.
+Thank you  [LostAbaddon/AutoClaude](https://github.com/LostAbaddon/AutoClaude). I use your code to change autogpt 0.3.1.Your code was very helpful to me.
