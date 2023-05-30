@@ -60,6 +60,13 @@ class Config(metaclass=Singleton):
             os.getenv("RESTRICT_TO_WORKSPACE", "True") == "True"
         )
 
+        # add claude settings
+        self.claude_api_key = os.getenv("CLAUDE_API_KEY", "EMPTY")
+        self.claude_mode = os.getenv("CLAUDE_MODEL", "claude-v1")
+        self.claude_temperature = float(os.getenv("CLAUDE_TEMPERATURE", "1"))
+        self.use_claude = self.claude_api_key != "EMPTY"
+        self.ai_hint = "Claude" if self.use_claude else "GPT"
+
         if self.use_azure:
             self.load_azure_config()
             openai.api_type = self.openai_api_type

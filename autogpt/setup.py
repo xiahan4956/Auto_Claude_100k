@@ -15,21 +15,20 @@ from autogpt.prompts.default_prompts import (
     DEFAULT_USER_DESIRE_PROMPT,
 )
 
-CFG = Config()
 
 
 def prompt_user() -> AIConfig:
     """Prompt the user for input
-
     Returns:
         AIConfig: The AIConfig object tailored to the user's input
     """
     ai_name = ""
     ai_config = None
+    cfg = Config()
 
     # Construct the prompt
     logger.typewriter_log(
-        "Welcome to Auto-GPT! ",
+        f"Welcome to Auto-{cfg.ai_hint} ",
         Fore.GREEN,
         "run with '--help' for more information.",
         speak_text=True,
@@ -44,7 +43,7 @@ def prompt_user() -> AIConfig:
     )
 
     user_desire = utils.clean_input(
-        f"{Fore.LIGHTBLUE_EX}I want Auto-GPT to{Style.RESET_ALL}: "
+        f"{Fore.LIGHTBLUE_EX}I want Auto-{cfg.ai_hint} to{Style.RESET_ALL}: "
     )
 
     if user_desire == "":
@@ -84,6 +83,7 @@ def generate_aiconfig_manual() -> AIConfig:
     Returns:
         AIConfig: An AIConfig object containing the user-defined or default AI name, role, and goals.
     """
+    cfg = Config()
 
     # Manual Setup Intro
     logger.typewriter_log(
@@ -100,7 +100,7 @@ def generate_aiconfig_manual() -> AIConfig:
     )
     ai_name = utils.clean_input("AI Name: ")
     if ai_name == "":
-        ai_name = "Entrepreneur-GPT"
+        ai_name = "Entrepreneur-"+{cfg.ai_hint}
 
     logger.typewriter_log(
         f"{ai_name} here!", Fore.LIGHTBLUE_EX, "I am at your service.", speak_text=True

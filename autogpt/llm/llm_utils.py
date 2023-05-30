@@ -17,6 +17,45 @@ from autogpt.llm.base import Message
 from autogpt.logs import logger
 
 
+
+# Claude
+MAX_TOKEN_ONCE = 75000
+CONTINUE_PROMPT = "... continue"
+import anthropic as anthropic
+
+CFG = Config()
+openai.api_key = CFG.openai_api_key
+
+
+def _sendReq(client, prompt, max_tokens_to_sample):
+    print("current words of Claude:",len(prompt))
+    response = client.completion(
+        prompt=prompt,
+        stop_sequences = [anthropic.HUMAN_PROMPT, anthropic.AI_PROMPT],
+        model=CFG.claude_mode,
+        max_tokens_to_sample=max_tokens_to_sample,
+    )
+    return response
+
+def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
+    client = anthropic.Client(CFG.claude_api_key)
+    prompt = f"{anthropic.HUMAN_PROMPT} {question} {anthropic.AI_PROMPT}"
+
+    response = _sendReq(client, prompt, max_tokens_to_sample)
+    data = response["completion"]
+    prompt = prompt + response["completion"]
+
+    while response["stop_reason"] == "max_tokens":
+        prompt = prompt + f"{anthropic.HUMAN_PROMPT} {CONTINUE_PROMPT} {anthropic.AI_PROMPT}"
+        response = _sendReq(client, prompt, max_tokens_to_sample)
+        d = response["completion"]
+        prompt = prompt + d
+        if data[-1] != ' ' and d[0] != ' ':
+            data = data + " " + d
+        else:
+            data = data + d
+    return data
+
 def retry_openai_api(
     num_retries: int = 10,
     backoff_base: float = 2.0,
@@ -162,7 +201,12 @@ def create_chat_completion(
                     temperature=temperature,
                     max_tokens=max_tokens,
                 )
+             # add claude_100k_send
+            elif cfg.use_claude:
+                print("use claude model to think")
+                response = sendReq(messages)                
             else:
+                print("use gpt model to think")
                 response = api_manager.create_chat_completion(
                     model=model,
                     messages=messages,
@@ -202,7 +246,13 @@ def create_chat_completion(
             raise RuntimeError(f"Failed to get response after {num_retries} retries")
         else:
             quit(1)
-    resp = response.choices[0].message["content"]
+    
+    # change response behavior for claude
+    if cfg.use_claude:
+        resp = response
+    else:
+        resp = response.choices[0].message["content"]
+    
     for plugin in cfg.plugins:
         if not plugin.can_handle_on_response():
             continue

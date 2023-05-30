@@ -53,7 +53,7 @@ def clean_input(prompt: str = "", talk=False):
         answer = input(prompt)
         return answer
     except KeyboardInterrupt:
-        logger.info("You interrupted Auto-GPT")
+        logger.info("You interrupted Auto-"+cfg.ai_hint)
         logger.info("Quitting...")
         exit(0)
 

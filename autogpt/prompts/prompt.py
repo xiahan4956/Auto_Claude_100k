@@ -23,15 +23,18 @@ def build_default_prompt_generator() -> PromptGenerator:
     Returns:
         str: The generated prompt string.
     """
+    hint = CFG.ai_hint
 
     # Initialize the PromptGenerator object
     prompt_generator = PromptGenerator()
 
     # Add constraints to the PromptGenerator object
-    prompt_generator.add_constraint(
-        "~4000 word limit for short term memory. Your short term memory is short, so"
-        " immediately save important information to files."
-    )
+    
+    # claude 100k do not need
+    # prompt_generator.add_constraint(
+    #     "~4000 word limit for short term memory. Your short term memory is short, so"
+    #     " immediately save important information to files."
+    # )
     prompt_generator.add_constraint(
         "If you are unsure how you previously did something or want to recall past"
         " events, thinking about similar events will help you remember."
@@ -45,9 +48,10 @@ def build_default_prompt_generator() -> PromptGenerator:
     prompt_generator.add_resource(
         "Internet access for searches and information gathering."
     )
-    prompt_generator.add_resource("Long Term memory management.")
+    # claude not need
+    # prompt_generator.add_resource("Long Term memory management.")
     prompt_generator.add_resource(
-        "GPT-3.5 powered Agents for delegation of simple tasks."
+        CFG.ai_hint  + "powered Agents for delegation of simple tasks."
     )
     prompt_generator.add_resource("File output.")
 
@@ -62,10 +66,11 @@ def build_default_prompt_generator() -> PromptGenerator:
     prompt_generator.add_performance_evaluation(
         "Reflect on past decisions and strategies to refine your approach."
     )
-    prompt_generator.add_performance_evaluation(
-        "Every command has a cost, so be smart and efficient. Aim to complete tasks in"
-        " the least number of steps."
-    )
+    # Claude dot not need this
+    # prompt_generator.add_performance_evaluation(
+    #     "Every command has a cost, so be smart and efficient. Aim to complete tasks in"
+    #     " the least number of steps."
+    # )
     prompt_generator.add_performance_evaluation("Write all code to a file.")
     return prompt_generator
 
