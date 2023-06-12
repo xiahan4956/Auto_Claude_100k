@@ -128,6 +128,9 @@ class HomePage:
             # 判断能否切换模式        
             self.check_and_swtich_mode(mode)
 
+            # 刷新
+            # self._open_new_conversation()
+
             # 发送消息
             self._send_pmt(prompt,mode)
 
@@ -247,7 +250,7 @@ class HomePage:
 
         while True:
             try:
-                print("刷新,开始打开新对话,等待5s,防止被ban")
+                # print("刷新,开始打开新对话,等待5s,防止被ban")
                 # self.driver.refresh()
                 # time.sleep(5)
 

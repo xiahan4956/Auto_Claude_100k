@@ -169,7 +169,8 @@ def create_chat_completion(
                     max_tokens=max_tokens,
                 )
              # add claude_100k_send
-            if len(str(messages)) > 12000:
+            # if len(str(messages)) > 12000:
+            if "claude" in model: 
                 print("use claude 100k model to think")
                 print("-----------claude massages----------------")
                 print(r'{}'.format(str(messages)))
@@ -182,7 +183,7 @@ def create_chat_completion(
                 print("use gpt4 model to think")
                 response = gpt.get(str(messages),mode=4) 
                 return response  
-            break
+            
         except RateLimitError:
             logger.debug(
                 f"{Fore.RED}Error: ", f"Reached rate limit, passing...{Fore.RESET}"

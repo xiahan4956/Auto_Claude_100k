@@ -51,14 +51,17 @@ def auto_fix_json(json_string: str, schema: str) -> str:
     function_string = "def fix_json(json_string: str, schema:str=None) -> str:"
     args = [f"'''{json_string}'''", f"'''{schema}'''"]
     description_string = (
-        "This function takes a JSON string and ensures that it"
-        " is parseable and fully compliant with the provided schema. If an object"
-        " or field specified in the schema isn't contained within the correct JSON,"
-        " it is omitted. The function also escapes any double quotes within JSON"
-        " string values to ensure that they are valid. If the JSON string contains"
-        " any None or NaN values, they are replaced with null before being parsed."
-        " if command is null,you could add a command based on the meaning of the content:"
-        '''Commands:
+
+        '''
+        This function takes a JSON string and ensures that it
+        is parseable and fully compliant with the provided schema. If an object
+        or field specified in the schema isn't contained within the correct JSON,
+        it is omitted. The function also escapes any double quotes within JSON
+        string values to ensure that they are valid. If the JSON string contains
+        any None or NaN values, they are replaced with null before being parsed.
+
+        **if the command is null,you must add a command based on the meaning of the context**:
+        Commands:
         1. append_to_file: Append to file, args: "filename": "<filename>", "text": "<text>"
         2. delete_file: Delete file, args: "filename": "<filename>"
         3. list_files: List Files in Directory, args: "directory": "<directory>"
@@ -73,7 +76,14 @@ def auto_fix_json(json_string: str, schema: str) -> str:
         12. message_agent: Message GPT Agent, args: "key": "<key>", "message": "<message>"
         13. start_agent: Start GPT Agent, args: "name": "<name>", "task": "<short_task_desc>", "prompt": "<prompt>"
         14. task_complete: Task Complete (Shutdown), args: "reason": "<reason>"
-        15. ask_genius_bing: "Ask Bing AI", args: "question": "<question>"'''
+        15. ask_genius_bing: "Ask Bing AI", args: "question": "<question>"
+        
+        **Return the json directly.**
+        Do not give python code.
+        Do not speak more.
+        Do not use code block warp json.
+        Do not ues ``` warp the json.
+        '''
     )
 
     # If it doesn't already start with a "`", add one:
