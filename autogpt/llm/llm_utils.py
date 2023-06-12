@@ -15,46 +15,13 @@ from autogpt.config import Config
 from autogpt.llm.api_manager import ApiManager
 from autogpt.llm.base import Message
 from autogpt.logs import logger
+from autogpt.llm.claude import *
+from autogpt.llm.web_gpt import *
 
-
-
-# Claude
-MAX_TOKEN_ONCE = 75000
-CONTINUE_PROMPT = "... continue"
-import anthropic as anthropic
 
 CFG = Config()
-openai.api_key = CFG.openai_api_key
 
-
-def _sendReq(client, prompt, max_tokens_to_sample):
-    print("current words of Claude:",len(prompt))
-    response = client.completion(
-        prompt=prompt,
-        stop_sequences = [anthropic.HUMAN_PROMPT, anthropic.AI_PROMPT],
-        model=CFG.claude_mode,
-        max_tokens_to_sample=max_tokens_to_sample,
-    )
-    return response
-
-def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
-    client = anthropic.Client(CFG.claude_api_key)
-    prompt = f"{anthropic.HUMAN_PROMPT} {question} {anthropic.AI_PROMPT}"
-
-    response = _sendReq(client, prompt, max_tokens_to_sample)
-    data = response["completion"]
-    prompt = prompt + response["completion"]
-
-    while response["stop_reason"] == "max_tokens":
-        prompt = prompt + f"{anthropic.HUMAN_PROMPT} {CONTINUE_PROMPT} {anthropic.AI_PROMPT}"
-        response = _sendReq(client, prompt, max_tokens_to_sample)
-        d = response["completion"]
-        prompt = prompt + d
-        if data[-1] != ' ' and d[0] != ' ':
-            data = data + " " + d
-        else:
-            data = data + d
-    return data
+gpt = gpt_web_api()
 
 def retry_openai_api(
     num_retries: int = 10,
@@ -202,17 +169,19 @@ def create_chat_completion(
                     max_tokens=max_tokens,
                 )
              # add claude_100k_send
-            elif cfg.use_claude:
-                print("use claude model to think")
-                response = sendReq(messages)                
+            elif "claude" in model:
+                print("use claude 100k model to think")
+                print("-----------claude massages----------------")
+                print(r'{}'.format(str(messages)))
+                response = sendReq(messages)
+                print("======================claude resp=======================")
+                print(r'{}'.format(str(response)))
+                print("----------------------end------------------------")
+                return response           
             else:
-                print("use gpt model to think")
-                response = api_manager.create_chat_completion(
-                    model=model,
-                    messages=messages,
-                    temperature=temperature,
-                    max_tokens=max_tokens,
-                )
+                print("use gpt4 model to think")
+                response = gpt.get(str(messages),mode=4) 
+                return response  
             break
         except RateLimitError:
             logger.debug(
@@ -247,8 +216,8 @@ def create_chat_completion(
         else:
             quit(1)
     
-    # change response behavior for claude
-    if cfg.use_claude:
+    # change response behavior of claude
+    if "claude" in model:
         resp = response
     else:
         resp = response.choices[0].message["content"]

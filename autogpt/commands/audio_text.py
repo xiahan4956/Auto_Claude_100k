@@ -9,13 +9,13 @@ from autogpt.config import Config
 CFG = Config()
 
 
-# @command(
-#     "read_audio_from_file",
-#     "Convert Audio to text",
-#     '"filename": "<filename>"',
-#     CFG.huggingface_audio_to_text_model,
-#     "Configure huggingface_audio_to_text_model.",
-# )
+@command(
+    "read_audio_from_file",
+    "Convert Audio to text",
+    '"filename": "<filename>"',
+    CFG.huggingface_audio_to_text_model,
+    "Configure huggingface_audio_to_text_model.",
+)
 def read_audio_from_file(filename: str) -> str:
     """
     Convert audio to text.

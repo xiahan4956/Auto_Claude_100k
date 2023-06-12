@@ -8,13 +8,13 @@ from autogpt.url_utils.validators import validate_url
 CFG = Config()
 
 
-# @command(
-#     "clone_repository",
-#     "Clone Repository",
-#     '"url": "<repository_url>", "clone_path": "<clone_path>"',
-#     CFG.github_username and CFG.github_api_key,
-#     "Configure github_username and github_api_key.",
-# )
+@command(
+    "clone_repository",
+    "Clone Repository",
+    '"url": "<repository_url>", "clone_path": "<clone_path>"',
+    CFG.github_username and CFG.github_api_key,
+    "Configure github_username and github_api_key.",
+)
 @validate_url
 def clone_repository(url: str, clone_path: str) -> str:
     """Clone a GitHub repository locally.

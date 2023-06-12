@@ -78,7 +78,7 @@ def chat_with_ai(
             str: The AI's response.
             """
             CFG = Config()
-            model = CFG.claude_mode  if CFG.use_claude else cfg.fast_llm_model # change mode to claude_100k
+            model = CFG.claude_mode   # change mode to claude_100k
             # Reserve 1000 tokens for the response
             logger.debug(f"Token limit: {token_limit}")
             send_token_limit = token_limit - 1000
