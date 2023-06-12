@@ -57,6 +57,23 @@ def auto_fix_json(json_string: str, schema: str) -> str:
         " it is omitted. The function also escapes any double quotes within JSON"
         " string values to ensure that they are valid. If the JSON string contains"
         " any None or NaN values, they are replaced with null before being parsed."
+        " if command is null,you could add a command based on the meaning of the content:"
+        '''Commands:
+        1. append_to_file: Append to file, args: "filename": "<filename>", "text": "<text>"
+        2. delete_file: Delete file, args: "filename": "<filename>"
+        3. list_files: List Files in Directory, args: "directory": "<directory>"
+        4. read_file: Read file, args: "filename": "<filename>"
+        5. write_to_file: Write to file, args: "filename": "<filename>", "text": "<text>"
+        6. google: Google Search, args: "query": "<query>"
+        7. browse_website: Browse Website, args: "url": "<url>", "question": "<what_you_want_to_find_on_website>"
+        8. delete_agent: Delete GPT Agent, args: "key": "<key>"
+        9. get_hyperlinks: Get text summary, args: "url": "<url>"
+        10. get_text_summary: Get text summary, args: "url": "<url>", "question": "<question>"
+        11. list_agents: List GPT Agents, args: () -> str
+        12. message_agent: Message GPT Agent, args: "key": "<key>", "message": "<message>"
+        13. start_agent: Start GPT Agent, args: "name": "<name>", "task": "<short_task_desc>", "prompt": "<prompt>"
+        14. task_complete: Task Complete (Shutdown), args: "reason": "<reason>"
+        15. ask_genius_bing: "Ask Bing AI", args: "question": "<question>"'''
     )
 
     # If it doesn't already start with a "`", add one:
