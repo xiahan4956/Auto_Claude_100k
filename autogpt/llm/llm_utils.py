@@ -216,17 +216,7 @@ def create_chat_completion(
         else:
             quit(1)
     
-    # change response behavior of claude
-    if "claude" in model:
-        resp = response
-    else:
-        resp = response.choices[0].message["content"]
-    
-    for plugin in cfg.plugins:
-        if not plugin.can_handle_on_response():
-            continue
-        resp = plugin.on_response(resp)
-    return resp
+
 
 
 def batched(iterable, n):

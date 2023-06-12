@@ -51,7 +51,7 @@ def build_default_prompt_generator() -> PromptGenerator:
     # claude not need
     # prompt_generator.add_resource("Long Term memory management.")
     prompt_generator.add_resource(
-        CFG.ai_hint  + "powered Agents for delegation of simple tasks."
+        "GPT4 powered Agents for delegation of simple tasks."
     )
     prompt_generator.add_resource("File output.")
 
@@ -71,7 +71,7 @@ def build_default_prompt_generator() -> PromptGenerator:
     #     "Every command has a cost, so be smart and efficient. Aim to complete tasks in"
     #     " the least number of steps."
     # )
-    prompt_generator.add_performance_evaluation("Write all code to a file.")
+    # prompt_generator.add_performance_evaluation("Write all code to a file.")
     return prompt_generator
 
 
