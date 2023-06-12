@@ -169,7 +169,7 @@ def create_chat_completion(
                     max_tokens=max_tokens,
                 )
              # add claude_100k_send
-            elif "claude" in model:
+            if len(str(messages)) > 12000:
                 print("use claude 100k model to think")
                 print("-----------claude massages----------------")
                 print(r'{}'.format(str(messages)))
