@@ -119,7 +119,9 @@ class HomePage:
         self.send(prompt,mode)
                             
         # 提取消息
-        answer = self.trans_to_markdown_answer(prompt,mode)
+        answer = self._extra_html_answer(prompt,mode)
+        answer = self._build_json(answer)
+
         print(answer)
         return answer         
 
@@ -265,18 +267,14 @@ class HomePage:
                 print("新对话没有寻找到元素,重试",e)
 
 
-    def trans_to_markdown_answer(self,prompt,mode):
-        '''对于回答渲染为'''
-        answer = self._extra_html_answer(prompt,mode)
-        answer = markdownify.markdownify(answer)
-        return answer
+
 
     def _extra_html_answer(self,prompt,mode):
         '''根据回答索引,提取网页的信息'''
         while True:
             try:
                 print("开始提取网页消息")
-                answer = self.driver.find_elements(By.CSS_SELECTOR,"div.light")[self.answer_i].get_attribute('innerHTML')
+                answer = self.driver.find_elements(By.CSS_SELECTOR,"div.light")[self.answer_i].text
                 self.answer_i += 1 #提取到消息再变化
                 print("提取网页消息成功")
                 break
@@ -286,7 +284,22 @@ class HomePage:
                 self.send(prompt,mode)
             except Exception as e:
                 print("提取消息未知错误",e)
-        
+
+
+        return answer
+
+    def _build_json(self, answer):
+        answer = answer.replace("\\n","").replace("\n","").replace("'","").replace("'''","")
+
+        parts = answer.split("[{")
+        if len(parts) > 1:
+            answer = "{" +  "".join(parts[1:])
+            answer = answer[:-1]
+
+        parts = answer.split("{")
+        if len(parts) > 1:
+            answer =  "{" + "{".join(parts[1:])
+            
         return answer
 
 def lunch_driver():

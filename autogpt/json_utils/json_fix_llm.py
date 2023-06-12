@@ -17,12 +17,6 @@ from autogpt.speech import say_text
 
 JSON_SCHEMA = """
 {
-    "command": {
-        "name": "command name",
-        "args": {
-            "arg name": "value"
-        }
-    },
     "thoughts":
     {
         "text": "thought",
@@ -30,6 +24,12 @@ JSON_SCHEMA = """
         "plan": "- short bulleted\n- list that conveys\n- long-term plan",
         "criticism": "constructive self-criticism",
         "speak": "thoughts summary to say to user"
+    },
+    "command": {
+        "name": "command name",
+        "args": {
+            "arg name": "value"
+        }
     }
 }
 """
@@ -81,8 +81,6 @@ def auto_fix_json(json_string: str, schema: str) -> str:
         **Return the json directly.**
         Do not give python code.
         Do not speak more.
-        Do not use code block warp json.
-        Do not ues ``` warp the json.
         '''
     )
 
