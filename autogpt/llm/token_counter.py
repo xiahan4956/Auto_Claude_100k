@@ -24,7 +24,7 @@ def count_message_tokens(
     Returns:
         int: The number of tokens used by the list of messages.
     """
-    if model == "claude-v1-100k": 
+    if "claude" in model: 
         # Returning num tokens assuming gpt-3.5-turbo-0301.")
         return count_message_tokens(messages, model="gpt-3.5-turbo-0301")
     try:

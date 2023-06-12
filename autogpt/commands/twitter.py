@@ -6,11 +6,11 @@ import tweepy
 from autogpt.commands.command import command
 
 
-@command(
-    "send_tweet",
-    "Send Tweet",
-    '"tweet_text": "<tweet_text>"',
-)
+# @command(
+#     "send_tweet",
+#     "Send Tweet",
+#     '"tweet_text": "<tweet_text>"',
+# )
 def send_tweet(tweet_text: str) -> str:
     """
       A function that takes in a string and returns a response from create chat
