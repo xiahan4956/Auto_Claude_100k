@@ -53,7 +53,7 @@ def auto_fix_json(json_string: str, schema: str) -> str:
 
 
     # 额外处理json_string,防止过长,仅仅保留后面的部分
-    json_string = json_string[:-10000]
+    json_string = json_string[-10000:]
 
     function_string = "def fix_json(json_string: str, schema:str=None) -> str:"
     args = [f"'''{json_string}'''", f"'''{schema}'''"]
