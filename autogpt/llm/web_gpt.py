@@ -159,12 +159,12 @@ class HomePage:
                         # 检查是否出现1小时请求过多的限制
                         if self._check_one_hour_limit():
                             print("等待10分钟")
-                            time.sleep(10 * 60)
 
-                        if self._check_gpt4_limit():
-                            print("等待30分钟")
-                            time.sleep(30 * 60)
-        
+                            i = 0
+                            while i < 10 * 60:
+                                time.sleep(1)
+                                i += 1
+
                         self.answer_i = 0  
                         self._open_new_conversation()
                         self.send(prompt,mode)
@@ -222,16 +222,6 @@ class HomePage:
         except Exception as e:
             print("未切换模式",e)
 
-
-    def _check_gpt4_limit(self):
-        print("判断gpt4是否达到次数限制")
-        try:
-            self.driver.find_element(By.XPATH,"//div[contains(text(),'Use default model')]")
-            print("gpt4 达到次数限制")
-            return True
-        except NoSuchElementException:
-            print("gpt4 没有达到次数限制")
-            return False
 
    
     def _check_one_hour_limit(self):
@@ -299,7 +289,7 @@ class HomePage:
         parts = answer.split("{")
         if len(parts) > 1:
             answer =  "{" + "{".join(parts[1:])
-            
+
         return answer
 
 def lunch_driver():
