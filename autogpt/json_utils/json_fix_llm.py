@@ -67,6 +67,7 @@ def auto_fix_json(json_string: str, schema: str) -> str:
         string values to ensure that they are valid. If the JSON string contains
         any None or NaN values, they are replaced with null before being parsed.
 
+        ** if the command is the same as command before,you should switch to a new command ** 
         **if the command that you are parsing is null or blank or 'command name',you must add a command based on the meaning of the context**:
         Commands:
         1. append_to_file: Append to file, args: "filename": "<filename>", "text": "<text>"
