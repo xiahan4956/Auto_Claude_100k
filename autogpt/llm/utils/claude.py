@@ -31,15 +31,5 @@ def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
 
     response = _sendReq(client, prompt, max_tokens_to_sample)
     data = response["completion"]
-    prompt = prompt + response["completion"]
 
-    while response["stop_reason"] == "max_tokens":
-        prompt = prompt + f"{anthropic.HUMAN_PROMPT} {CONTINUE_PROMPT} {anthropic.AI_PROMPT}"
-        response = _sendReq(client, prompt, max_tokens_to_sample)
-        d = response["completion"]
-        prompt = prompt + d
-        if data[-1] != ' ' and d[0] != ' ':
-            data = data + " " + d
-        else:
-            data = data + d
     return data
