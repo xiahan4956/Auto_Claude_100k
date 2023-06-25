@@ -58,28 +58,29 @@ class ApiManager(metaclass=Singleton):
                 api_key=cfg.openai_api_key,
             )
         else:
+
+            
+            from autogpt.llm.utils.claude import sendReq
+            # 我们需要构建一个openai的对象,然后把值换掉
             response = openai.ChatCompletion.create(
                 model=model,
-                messages=messages,
+                messages=[{'role': 'user', 'content': 'hello'}],
                 temperature=temperature,
                 max_tokens=max_tokens,
                 api_key=cfg.openai_api_key,
             )
-            
-            from autogpt.llm.utils.claude import sendReq
-            # 我们需要构建一个openai的对象,然后把值换掉
+
+
+            res = sendReq(messages) 
+            response.choices[0].message.content = res
+
             # response = openai.ChatCompletion.create(
             #     model=model,
-            #     messages=[{'role': 'user', 'content': 'hello'}],
+            #     messages=messages,
             #     temperature=temperature,
             #     max_tokens=max_tokens,
             #     api_key=cfg.openai_api_key,
-            # )
-
-
-            # messages = sendReq(messages) 
-            # response.choices[0].message.content = messages
-            
+            # )            
 
 
         # if not hasattr(response, "error"):

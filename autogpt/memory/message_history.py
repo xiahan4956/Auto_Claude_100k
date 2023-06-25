@@ -66,6 +66,7 @@ class MessageHistory:
             list[Message]: A list of messages that are in full_message_history with an index higher than last_trimmed_index and absent from current_message_chain.
         """
         # Select messages in full_message_history with an index higher than last_trimmed_index
+        # 猜测大致,把新的消息剪切出来
         new_messages = [
             msg for i, msg in enumerate(self) if i > self.last_trimmed_index
         ]
