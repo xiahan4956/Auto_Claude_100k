@@ -238,25 +238,36 @@ def create_chat_completion(
     else:
         kwargs = {"model": model}
 
-    if "Your task is to create a concise running summary" in str(prompt.raw()):
-        print("----------------\n\n\n\n")
-        print((str(prompt.raw())))
-        print("\n\n\n\n----------------")
-        response = api_manager.create_chat_completion(
-            **kwargs,
-            messages=prompt.raw(),
-            temperature=temperature,
-            max_tokens=max_tokens,
-        )
-        resp = response.choices[0].message.content
-    else:
-        print("use claude model to think")
-        print("the input words of claude: "+str(len(str(prompt.raw()))))
-        print("----------------\n\n\n\n")
-        print((str(prompt.raw())))
-        print("\n\n\n\n----------------")
-        print("the input words of claude: "+str(len(str(prompt.raw()))))
-        resp = sendReq(prompt.raw())    
+
+    print("----------------\n\n\n\n")
+    print((str(prompt.raw())))
+    print("\n\n\n\n----------------")
+    response = api_manager.create_chat_completion(
+        **kwargs,
+        messages=prompt.raw(),
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+    resp = response.choices[0].message.content
+    # if "Your task is to create a concise running summary" in str(prompt.raw()):
+    #     print("----------------\n\n\n\n")
+    #     print((str(prompt.raw())))
+    #     print("\n\n\n\n----------------")
+    #     response = api_manager.create_chat_completion(
+    #         **kwargs,
+    #         messages=prompt.raw(),
+    #         temperature=temperature,
+    #         max_tokens=max_tokens,
+    #     )
+    #     resp = response.choices[0].message.content
+    # else:
+    #     print("use claude model to think")
+    #     print("the input words of claude: "+str(len(str(prompt.raw()))))
+    #     print("----------------\n\n\n\n")
+    #     print((str(prompt.raw())))
+    #     print("\n\n\n\n----------------")
+    #     print("the input words of claude: "+str(len(str(prompt.raw()))))
+    #     resp = sendReq(prompt.raw())    
 
 
     for plugin in cfg.plugins:

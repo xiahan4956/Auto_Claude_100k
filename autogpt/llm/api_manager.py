@@ -65,8 +65,9 @@ class ApiManager(metaclass=Singleton):
                 max_tokens=max_tokens,
                 api_key=cfg.openai_api_key,
             )
+            
             # from autogpt.llm.utils.claude import sendReq
-            # 我们需要构建一个openai的对象,然后把值换掉
+            # # 我们需要构建一个openai的对象,然后把值换掉
             # response = openai.ChatCompletion.create(
             #     model=model,
             #     messages=[{'role': 'user', 'content': 'hello'}],
