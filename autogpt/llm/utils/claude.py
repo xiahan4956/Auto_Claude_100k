@@ -14,7 +14,7 @@ def _sendReq(client, prompt, max_tokens_to_sample):
             response = client.completion(
                 prompt=prompt,
                 stop_sequences = [anthropic.HUMAN_PROMPT, anthropic.AI_PROMPT],
-                model=CFG.smart_llm_model,
+                model="claude-1.3-100k",
                 max_tokens_to_sample=max_tokens_to_sample,
                 temperature = 0.3
             )
