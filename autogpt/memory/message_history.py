@@ -65,8 +65,8 @@ class MessageHistory:
             Message: A message with the new running summary after adding the trimmed messages.
             list[Message]: A list of messages that are in full_message_history with an index higher than last_trimmed_index and absent from current_message_chain.
         """
+        # 去除message的函数没有错,但是message没有加上去
         # Select messages in full_message_history with an index higher than last_trimmed_index
-        # 猜测大致,把新的消息剪切出来
         new_messages = [
             msg for i, msg in enumerate(self) if i > self.last_trimmed_index
         ]
@@ -75,6 +75,8 @@ class MessageHistory:
         new_messages_not_in_chain = [
             msg for msg in new_messages if msg not in current_message_chain
         ]
+
+        
 
         if not new_messages_not_in_chain:
             return self.summary_message(), []

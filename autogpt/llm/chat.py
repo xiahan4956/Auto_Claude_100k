@@ -59,6 +59,7 @@ def chat_with_ai(
     # logger.debug(f"Memory Stats: {agent.memory.get_stats()}")
     relevant_memory = []
 
+    # 初步创建了message_sequence
     message_sequence = ChatSequence.for_model(
         model,
         [
@@ -72,7 +73,8 @@ def chat_with_ai(
     )
 
     # Add messages from the full message history until we reach the token limit
-    next_message_to_add_index = len(agent.history) - 1
+    # 2023-06-26 从整体的历史记录中增加消息. 整体的历史记录是如何来的?
+    next_message_to_add_index = len(agent.history) - 1 # 猜测agent.history是所有的记录
     insertion_index = len(message_sequence)
     # Count the currently used tokens
     current_tokens_used = message_sequence.token_length
@@ -90,12 +92,14 @@ def chat_with_ai(
     #     )
 
     # Account for user input (appended later)
+    # 考虑用户的输入,把用户的输入加入到message_sequence中
     user_input_msg = Message("user", user_input)
     current_tokens_used += count_message_tokens([user_input_msg], model)
 
     current_tokens_used += 500  # Reserve space for new_summary_message
 
     # Add Messages until the token limit is reached or there are no more messages to add.
+    # 感觉这里是添加历史的消息,添加到不能够添加位置
     for cycle in reversed(list(agent.history.per_cycle())):
         messages_to_add = [msg for msg in cycle if msg is not None]
         tokens_to_add = count_message_tokens(messages_to_add, model)

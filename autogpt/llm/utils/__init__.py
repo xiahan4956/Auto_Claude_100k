@@ -239,9 +239,9 @@ def create_chat_completion(
         kwargs = {"model": model}
 
 
-    print("----------------\n\n\n\n")
+    print("------request----------\n\n\n\n")
     print((str(prompt.raw())))
-    print("\n\n\n\n----------------")
+    print("\n\n\n\n-------request---------")
     response = api_manager.create_chat_completion(
         **kwargs,
         messages=prompt.raw(),
@@ -249,6 +249,9 @@ def create_chat_completion(
         max_tokens=max_tokens,
     )
     resp = response.choices[0].message.content
+    print("========resp=========")
+    print(resp)
+    print("========resp=========")
     # if "Your task is to create a concise running summary" in str(prompt.raw()):
     #     print("----------------\n\n\n\n")
     #     print((str(prompt.raw())))
