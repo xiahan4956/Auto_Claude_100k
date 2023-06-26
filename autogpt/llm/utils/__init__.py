@@ -239,23 +239,27 @@ def create_chat_completion(
         kwargs = {"model": model}
 
 
-    print("------request----------\n\n\n\n")
+
+    # if "claude" in model:
+    print("----------------request----------------")
     print((str(prompt.raw())))
-    print("\n\n\n\n-------request---------")
-    response = api_manager.create_chat_completion(
-        **kwargs,
-        messages=prompt.raw(),
-        temperature=temperature,
-        max_tokens=max_tokens,
-    )
-    resp = response.choices[0].message.content
-    print("========resp=========")
+    print("----------------request----------------\n")
+    print("the input words of claude: "+str(len(str(prompt.raw()))))
+
+    resp = sendReq(prompt.raw())    
+    resp = resp.replace("\'","\"") # fix json error
+
+    print("==============resp==============")
     print(resp)
-    print("========resp=========")
-    # if "Your task is to create a concise running summary" in str(prompt.raw()):
-    #     print("----------------\n\n\n\n")
+    print("==============resp==============\n")
+
+    # else:
+    #     print("----------------request----------------")
     #     print((str(prompt.raw())))
-    #     print("\n\n\n\n----------------")
+    #     print("----------------request----------------\n")
+
+    #     print(" the input words of gpt: "+str(len(str(prompt.raw()))))
+
     #     response = api_manager.create_chat_completion(
     #         **kwargs,
     #         messages=prompt.raw(),
@@ -263,14 +267,11 @@ def create_chat_completion(
     #         max_tokens=max_tokens,
     #     )
     #     resp = response.choices[0].message.content
-    # else:
-    #     print("use claude model to think")
-    #     print("the input words of claude: "+str(len(str(prompt.raw()))))
-    #     print("----------------\n\n\n\n")
-    #     print((str(prompt.raw())))
-    #     print("\n\n\n\n----------------")
-    #     print("the input words of claude: "+str(len(str(prompt.raw()))))
-    #     resp = sendReq(prompt.raw())    
+        
+        
+    #     print("==============resp==============")
+    #     print(resp)
+    #     print("==============resp==============\n")
 
 
     for plugin in cfg.plugins:

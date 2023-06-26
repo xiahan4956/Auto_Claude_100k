@@ -58,40 +58,18 @@ class ApiManager(metaclass=Singleton):
                 api_key=cfg.openai_api_key,
             )
         else:
-
-            
-            from autogpt.llm.utils.claude import sendReq
-            # 我们需要构建一个openai的对象,然后把值换掉
             response = openai.ChatCompletion.create(
                 model=model,
-                messages=[{'role': 'user', 'content': 'hello'}],
+                messages=messages,
                 temperature=temperature,
                 max_tokens=max_tokens,
                 api_key=cfg.openai_api_key,
-            )
-
-            
-            res = sendReq(messages) 
-            res = res.replace('\'',"\"")
-
-            response.choices[0].message.content = res
-
-
-
-            # response = openai.ChatCompletion.create(
-            #     model=model,
-            #     messages=messages,
-            #     temperature=temperature,
-            #     max_tokens=max_tokens,
-            #     api_key=cfg.openai_api_key,
-            # )            
-
-
-        # if not hasattr(response, "error"):
-        #     logger.debug(f"Response: {response}")
-        #     prompt_tokens = response.usage.prompt_tokens
-        #     completion_tokens = response.usage.completion_tokens
-        #     self.update_cost(prompt_tokens, completion_tokens, model)
+            )            
+        if not hasattr(response, "error"):
+            logger.debug(f"Response: {response}")
+            prompt_tokens = response.usage.prompt_tokens
+            completion_tokens = response.usage.completion_tokens
+            self.update_cost(prompt_tokens, completion_tokens, model)
         return response
 
     def update_cost(self, prompt_tokens, completion_tokens, model: str):

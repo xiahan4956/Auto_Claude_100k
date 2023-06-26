@@ -192,11 +192,13 @@ def chat_with_ai(
         CURRENT_CONTEXT_FILE_NAME,
     )
 
+
     # TODO: use a model defined elsewhere, so that model can contain
     # temperature and other settings we care about
     assistant_reply = create_chat_completion(
         prompt=message_sequence,
         max_tokens=tokens_remaining,
+        model = Config().smart_llm_model
     )
 
     # Update full message history

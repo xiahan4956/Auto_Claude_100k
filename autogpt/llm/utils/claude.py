@@ -6,11 +6,10 @@ MAX_TOKEN_ONCE = 100000
 CONTINUE_PROMPT = "... continue"
 import anthropic as anthropic
 
-
+CFG = Config()
 def _sendReq(client, prompt, max_tokens_to_sample):
     for _ in range(5):
         try:
-            print("claude 开始发送")
             response = client.completion(
                 prompt=prompt,
                 stop_sequences = [anthropic.HUMAN_PROMPT, anthropic.AI_PROMPT],
