@@ -112,6 +112,7 @@ def fix_claude_json(claude_resp):
                 messages=messages,
                 functions=functions,
                 max_tokens=3000,
+                temperature=0.0,
             )
             resp_json = response["choices"][0]["message"]["function_call"]["arguments"]
             break
