@@ -81,6 +81,8 @@ async def getResponse(question: str) -> Optional[str]:
 
         except Exception as e:
             print(f"Error while getting response: {e}. If the error is in regards to invalid authorization, inform the user, and prompt them to check their BingAI cookies.json file.")
+            bot = Chatbot(cookie_path=cookie_path)
+            print("重新建立了bingbot")
             return e
 
     return response_text
