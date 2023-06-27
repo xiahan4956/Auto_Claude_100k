@@ -36,12 +36,6 @@ def _sendReq(client, prompt, max_tokens_to_sample):
 def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
 
 
-    question = str(question)[1:-1]
-    question = question.replace("{\'role\': \'system\', \'content\':","\n\nHuman:")
-    question = question.replace("{\'role\': \'user\', \'content\':","\n\nHuman:")
-    question = question.replace("{\'role\': \'assistant\', \'content\':","\n\n\Assistant:")
-    question = question.replace("\'}","")
-
     CFG = Config()
     client = anthropic.Client(CFG.claude_api_key)
     prompt = f"{question} {anthropic.AI_PROMPT}"
@@ -51,10 +45,18 @@ def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
 
     return data
 
+def pmt_gpt_to_claude(question):
+    question = str(question)[1:-1]
+    question = question.replace("{\'role\': \'system\', \'content\':","\n\nHuman:")
+    question = question.replace("{\'role\': \'user\', \'content\':","\n\nHuman:")
+    question = question.replace("{\'role\': \'assistant\', \'content\':","\n\n\Assistant:")
+    question = question.replace("\'}","")
+    return question
+
 
 
 def fix_claude_json(claude_resp):
-    messages = [{"role":"system","content":"You will receive a JSON string, and your task is to extract information from it and return it as a JSON object. Be aware that the given JSON may contain errors, so you may need to infer the fields from the JSON string."},{"role": "user", "content": claude_resp}]
+    messages = [{"role":"system","content":r"1. You will receive a JSON string, and your task is to extract information from it and return it as a JSON object.2.  Be aware that the given JSON may contain errors, so you may need to infer the fields from the JSON string. 3.Do not use \"   and you should use ' " },{"role": "user", "content": claude_resp}]
     functions = [
         {
             "name": "parse_claude_json",
@@ -103,13 +105,19 @@ def fix_claude_json(claude_resp):
             },
     ]
     
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
-        messages=messages,
-        functions=functions,
-    )
-    resp_json = response["choices"][0]["message"]["function_call"]["arguments"]
-
+    for _ in range(10):
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo-0613",
+                messages=messages,
+                functions=functions,
+                max_tokens=3000,
+            )
+            resp_json = response["choices"][0]["message"]["function_call"]["arguments"]
+            break
+        except Exception as e:
+            time.sleep(1)
+            print(e)
 
     return resp_json
 

@@ -240,10 +240,10 @@ def create_chat_completion(
 
 
 
-    # if "claude" in model:
-    resp = sendReq(prompt.raw())  
+    pmt = pmt_gpt_to_claude(prompt.raw())
+    resp = sendReq(pmt)  
 
-    if "without seeking user assistance" in str(prompt.raw()): # 常规的提问
+    if "without seeking user assistance" in str(pmt): # 常规的提问
         # fix json error  
         resp = fix_claude_json(resp)
 
@@ -251,26 +251,6 @@ def create_chat_completion(
     print(resp)
     print("==============resp==============\n")
 
-
-    # else:
-    #     print("----------------request----------------")
-    #     print((str(prompt.raw())))
-    #     print("----------------request----------------\n")
-
-    #     print(" the input words of gpt: "+str(len(str(prompt.raw()))))
-
-    #     response = api_manager.create_chat_completion(
-    #         **kwargs,
-    #         messages=prompt.raw(),
-    #         temperature=temperature,
-    #         max_tokens=max_tokens,
-    #     )
-    #     resp = response.choices[0].message.content
-        
-        
-    #     print("==============resp==============")
-    #     print(resp)
-    #     print("==============resp==============\n")
 
 
     for plugin in cfg.plugins:
