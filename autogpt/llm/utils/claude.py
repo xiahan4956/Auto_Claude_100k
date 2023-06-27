@@ -1,6 +1,7 @@
 from autogpt.config import Config
 import time
 import openai
+import json
 
 CFG = Config()
 openai.api_key = CFG.openai_api_key
@@ -56,7 +57,7 @@ def pmt_gpt_to_claude(question):
 
 
 def fix_claude_json(claude_resp):
-    messages = [{"role":"system","content":r"1. You will receive a JSON string, and your task is to extract information from it and return it as a JSON object.2.  Be aware that the given JSON may contain errors, so you may need to infer the fields from the JSON string. 3.Do not use \"   and you should use ' " },{"role": "user", "content": claude_resp}]
+    messages = [{"role":"system","content":r"1. You will receive a JSON string, and your task is to extract information from it and return it as a JSON object. 2.Use function's json schema to extrct.Please notice the format  3.  Be aware that the given JSON may contain errors, so you may need to infer the fields and the format from the JSON string. 4.Do not use \"   and you should use ' " },{"role": "user", "content": claude_resp}]
     functions = [
         {
             "name": "parse_claude_json",
@@ -76,7 +77,7 @@ def fix_claude_json(claude_resp):
                             },
                             "plan": {
                                 "type": "string",
-                                "description": "- short bulleted\n- list that conveys\n- long-term plan"
+                                "description": "it is a string,not list.If you find it is list,please use correct it "
                             },
                             "criticism": {
                                 "type": "string",
@@ -119,6 +120,14 @@ def fix_claude_json(claude_resp):
         except Exception as e:
             time.sleep(1)
             print(e)
+
+    # fix the plan
+    try:
+        resp_json = json.loads(resp_json)
+        resp_json["thoughts"]["plan"] = str(resp_json["thoughts"]["plan"]).replace("[","").replace("]","")
+        resp_json = json.dumps(resp_json)
+    except Exception as e:
+        print(e)
 
     return resp_json
 
