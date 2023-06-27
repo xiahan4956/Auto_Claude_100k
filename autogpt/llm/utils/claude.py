@@ -57,7 +57,7 @@ def pmt_gpt_to_claude(question):
 
 
 def fix_claude_json(claude_resp):
-    messages = [{"role":"system","content":r"1. You will receive a JSON string, and your task is to extract information from it and return it as a JSON object. 2.Use function's json schema to extrct.Please notice the format  3.  Be aware that the given JSON may contain errors, so you may need to infer the fields and the format from the JSON string. 4.Do not use \"   and you should use ' " },{"role": "user", "content": claude_resp}]
+    messages = [{"role":"system","content":r"1. You will receive a JSON string, and your task is to extract information from it and return it as a JSON object. 2.Use function's json schema to extrct.Please notice the format  3.  Be aware that the given JSON may contain errors, so you may need to infer the fields and the format from the JSON string. 4.Do not use \"  and \'  .you should use ' " },{"role": "user", "content": claude_resp}]
     functions = [
         {
             "name": "parse_claude_json",
@@ -106,6 +106,7 @@ def fix_claude_json(claude_resp):
             },
     ]
     
+    resp_json = claude_resp
     for _ in range(10):
         try:
             response = openai.ChatCompletion.create(

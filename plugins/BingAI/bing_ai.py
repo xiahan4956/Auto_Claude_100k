@@ -54,36 +54,33 @@ async def getResponse(question: str) -> Optional[str]:
     """
 
     # 期望bing能够刷新
-    global count
     global bot
-
-
-    if count == 10:
-        if bot:
-            await bot.close()
-        bot = Chatbot(cookie_path=cookie_path)
-
-    # 计数器加 1
-    count += 1
-
 
     if len(question) > 2000:
         return "Your question is too long, please make it less than 2000 characters."
 
-    try:
-        if bingai_mode == "precise":
-            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.precise, wss_link="wss://sydney.bing.com/sydney/ChatHub")
-        elif bingai_mode == "balanced":
-            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.balanced, wss_link="wss://sydney.bing.com/sydney/ChatHub")
-        else:
-            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.creative, wss_link="wss://sydney.bing.com/sydney/ChatHub")
-        #response_text = response['item']['messages'][1]['text']
+    for _ in range(5):
+        try:
+            if bingai_mode == "precise":
+                response = await bot.ask(prompt=question, conversation_style=ConversationStyle.precise, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+            elif bingai_mode == "balanced":
+                response = await bot.ask(prompt=question, conversation_style=ConversationStyle.balanced, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+            else:
+                response = await bot.ask(prompt=question, conversation_style=ConversationStyle.creative, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+            #response_text = response['item']['messages'][1]['text']
 
-        # 增加了网址
-        response_text = response['item']['messages'][1]["adaptiveCards"][0]["body"][0]["text"]
+            # 增加了网址
+            response_text = response['item']['messages'][1]["adaptiveCards"][0]["body"][0]["text"]
 
-    except Exception as e:
-        print(f"Error while getting response: {e}. If the error is in regards to invalid authorization, inform the user, and prompt them to check their BingAI cookies.json file.")
-        return e
+            if "new topic" not in response_text.lower() and "new conversation" not in response_text.lower():
+                break
+            else:
+                bot = Chatbot(cookie_path=cookie_path)
+                print("重新建立了bingbot")
+
+
+        except Exception as e:
+            print(f"Error while getting response: {e}. If the error is in regards to invalid authorization, inform the user, and prompt them to check their BingAI cookies.json file.")
+            return e
 
     return response_text
