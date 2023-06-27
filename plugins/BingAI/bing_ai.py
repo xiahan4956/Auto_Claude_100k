@@ -1,0 +1,89 @@
+from typing import Any, Dict, List, Optional, Tuple, TypeVar, TypedDict
+from EdgeGPT import Chatbot, ConversationStyle
+import json
+import os
+
+def load_cookies(cookie_path: str) -> Optional[Dict]:
+    """Load cookies from a file.
+
+    This function loads cookies from a given file path, and returns the
+    cookies as a dictionary if the file exists.
+
+    Args:
+        cookie_path (str): The path to the file containing cookies.
+
+    Returns:
+        Optional[Dict]: A dictionary containing cookies if the file exists, otherwise None.
+    """
+    if cookie_path is None or not os.path.exists(cookie_path):
+        print(f"Cookie file {cookie_path} not found. Please check the path and try again.")
+        return None
+
+    with open(cookie_path, 'r') as f:
+        cookies = json.load(f)
+    return cookies
+
+cookie_path = os.getenv("BINGAI_COOKIES_PATH")
+bingai_mode = os.getenv("BINGAI_MODE").lower()
+
+valid_modes = ["precise", "balanced", "creative"]
+if bingai_mode not in valid_modes:
+    print(bingai_mode + " is not a valid mode. The valid modes are precise, balanced, or creative.")
+cookies = load_cookies(cookie_path)
+if cookies:
+    bot = Chatbot(cookie_path=cookie_path)
+else:
+    print("Failed to initialize Chatbot. Exiting.")
+    exit()
+
+
+count = 0
+
+async def getResponse(question: str) -> Optional[str]:
+    """Get a response from BingAI.
+
+    This asynchronous function sends a question to BingAI, and retrieves
+    the response text. In case of any errors, it returns the error message
+    as a string.
+
+    Args:
+        question (str): The question to ask BingAI.
+
+    Returns:
+        Optional[str]: The response text from BingAI, or the error message in case of errors.
+    """
+
+    # 期望bing能够刷新
+    global count
+    global bot
+
+
+    if count == 10:
+        if bot:
+            await bot.close()
+        bot = Chatbot(cookie_path=cookie_path)
+
+    # 计数器加 1
+    count += 1
+
+
+    if len(question) > 2000:
+        return "Your question is too long, please make it less than 2000 characters."
+
+    try:
+        if bingai_mode == "precise":
+            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.precise, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+        elif bingai_mode == "balanced":
+            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.balanced, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+        else:
+            response = await bot.ask(prompt=question, conversation_style=ConversationStyle.creative, wss_link="wss://sydney.bing.com/sydney/ChatHub")
+        #response_text = response['item']['messages'][1]['text']
+
+        # 增加了网址
+        response_text = response['item']['messages'][1]["adaptiveCards"][0]["body"][0]["text"]
+
+    except Exception as e:
+        print(f"Error while getting response: {e}. If the error is in regards to invalid authorization, inform the user, and prompt them to check their BingAI cookies.json file.")
+        return e
+
+    return response_text
