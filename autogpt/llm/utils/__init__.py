@@ -20,7 +20,7 @@ from ..base import ChatSequence, Message
 from ..providers.openai import OPEN_AI_CHAT_MODELS
 from .token_counter import *
 from autogpt.llm.utils.claude import *
-
+import json
 
 def metered(func):
     """Adds ApiManager metering to functions which make OpenAI API calls"""
@@ -241,17 +241,16 @@ def create_chat_completion(
 
 
     # if "claude" in model:
-    print("----------------request----------------")
-    print((str(prompt.raw())))
-    print("----------------request----------------\n")
-    print("the input words of claude: "+str(len(str(prompt.raw()))))
+    resp = sendReq(prompt.raw())  
 
-    resp = sendReq(prompt.raw())    
-    resp = resp.replace("\'","\"") # fix json error
+    if "without seeking user assistance" in str(prompt.raw()): # 常规的提问
+        # fix json error  
+        resp = fix_claude_json(resp)
 
     print("==============resp==============")
     print(resp)
     print("==============resp==============\n")
+
 
     # else:
     #     print("----------------request----------------")
@@ -280,6 +279,39 @@ def create_chat_completion(
         resp = plugin.on_response(resp)
         
     return resp
+
+def parse_json(resp):
+    try:
+        d = { 
+        "thoughts":json.loads(resp)["properties"]["thoughts"],
+        "command":json.loads(resp)["properties"]["command"]
+        }
+        resp = json.dumps(d)
+        return resp
+    except:
+        pass
+    try:
+        d = { 
+        "thoughts":json.loads(resp)["properties"]["thoughts"]["properties"],
+        "command":json.loads(resp)["properties"]["command"]["properties"]
+        }
+        resp = json.dumps(d)
+        return resp
+    except:
+        pass
+
+    try:
+        d = { 
+        "thoughts":json.loads(resp)["properties"]["thoughts"]["properties"],
+        "command":json.loads(resp)["properties"]["command"]["properties"]
+        }
+        resp = json.dumps(d)
+        return resp
+    except:
+        pass
+
+    
+
 
 def check_model(
     model_name: str, model_type: Literal["smart_llm_model", "fast_llm_model"]

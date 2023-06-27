@@ -1,13 +1,23 @@
 from autogpt.config import Config
 import time
+import openai
 
-# Claude
+CFG = Config()
+openai.api_key = CFG.openai_api_key
+
+
 MAX_TOKEN_ONCE = 100000
 CONTINUE_PROMPT = "... continue"
 import anthropic as anthropic
 
-CFG = Config()
+
 def _sendReq(client, prompt, max_tokens_to_sample):
+    print("----------------request----------------")
+    print(rf"{prompt}")
+    print("----------------request----------------\n")
+    print("the input words of claude: "+str(len(prompt)))
+
+
     for _ in range(5):
         try:
             response = client.completion(
@@ -24,11 +34,82 @@ def _sendReq(client, prompt, max_tokens_to_sample):
     return response
 
 def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
+
+
+    question = str(question)[1:-1]
+    question = question.replace("{\'role\': \'system\', \'content\':","\n\nHuman:")
+    question = question.replace("{\'role\': \'user\', \'content\':","\n\nHuman:")
+    question = question.replace("{\'role\': \'assistant\', \'content\':","\n\n\Assistant:")
+    question = question.replace("\'}","")
+
     CFG = Config()
     client = anthropic.Client(CFG.claude_api_key)
-    prompt = f"{anthropic.HUMAN_PROMPT} {question} {anthropic.AI_PROMPT}"
+    prompt = f"{question} {anthropic.AI_PROMPT}"
 
     response = _sendReq(client, prompt, max_tokens_to_sample)
     data = response["completion"]
 
     return data
+
+
+
+def fix_claude_json(claude_resp):
+    messages = [{"role":"system","content":"You will receive a JSON string, and your task is to extract information from it and return it as a JSON object. Be aware that the given JSON may contain errors, so you may need to infer the fields from the JSON string."},{"role": "user", "content": claude_resp}]
+    functions = [
+        {
+            "name": "parse_claude_json",
+            "description": "parse a claude response to the json",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "thoughts": {
+                        "type": "object",
+                        "properties": {
+                            "text": {
+                                "type": "string",
+                                "description": "thoughts"
+                            },
+                            "reasoning": {
+                                "type": "string"
+                            },
+                            "plan": {
+                                "type": "string",
+                                "description": "- short bulleted\n- list that conveys\n- long-term plan"
+                            },
+                            "criticism": {
+                                "type": "string",
+                                "description": "constructive self-criticism"
+                            },
+                            "speak": {
+                                "type": "string",
+                                "description": "thoughts summary to say to user"
+                            }
+                        },
+                        "required": ["text", "reasoning", "plan", "criticism", "speak"],
+                    },
+                    "command": {
+                        "type": "object",
+                        "properties": {
+                            "name": {"type": "string"},
+                            "args": {
+                                "type": "object"
+                            }
+                        },
+                        "required": ["name", "args"],
+                    }
+                },
+                "required": ["thoughts", "command"],
+            },
+            },
+    ]
+    
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        messages=messages,
+        functions=functions,
+    )
+    resp_json = response["choices"][0]["message"]["function_call"]["arguments"]
+
+
+    return resp_json
+

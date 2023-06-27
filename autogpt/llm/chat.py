@@ -198,7 +198,6 @@ def chat_with_ai(
     assistant_reply = create_chat_completion(
         prompt=message_sequence,
         max_tokens=tokens_remaining,
-        model = Config().smart_llm_model
     )
 
     # Update full message history
