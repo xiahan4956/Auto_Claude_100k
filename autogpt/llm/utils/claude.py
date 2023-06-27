@@ -14,7 +14,7 @@ import anthropic as anthropic
 
 def _sendReq(client, prompt, max_tokens_to_sample):
     print("----------------request----------------")
-    print(rf"{prompt}")
+    print(prompt)
     print("----------------request----------------\n")
     print("the input words of claude: "+str(len(prompt)))
 
@@ -107,7 +107,7 @@ def fix_claude_json(claude_resp):
     ]
     
     resp_json = claude_resp
-    for _ in range(10):
+    for _ in range(5):
         try:
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo-0613",

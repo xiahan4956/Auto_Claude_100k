@@ -138,6 +138,8 @@ def read_file(filename: str, agent: Agent) -> str:
         if len(file_memory.chunks) > 1:
             return file_memory.summary
 
+        content += f"\n\n the content words is {len(content)}" # 增加字数统计
+
         return content
     except Exception as e:
         return f"Error: {str(e)}"
