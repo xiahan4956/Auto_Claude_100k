@@ -1,7 +1,6 @@
 # Auto Bard
 Use bard to run auto_gpt_0.4.2.
-<video src="bard.mp4" controls title="Title"></video>
-
+![bard](bard.mp4)
 
 # How to start
 1. clone auto_bard `git clone -b auto_bard_0.4.2 https://github.com/xiahan4956/Auto_Claude_100k.git`  
