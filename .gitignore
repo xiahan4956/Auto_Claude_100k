@@ -162,6 +162,9 @@ CURRENT_BULLETIN.md
 
 #bingai
 cookies.json
+plugins/BingAI
 
 #google ai
 service_account.json
+
+
