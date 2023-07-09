@@ -1,6 +1,6 @@
 # Auto Bard
 Use bard to run auto_gpt_0.4.2.
-![bard](bard.mp4)
+![bard](bard.gif)
 
 # How to start
 1. clone auto_bard `git clone -b auto_bard_0.4.2 https://github.com/xiahan4956/Auto_Claude_100k.git`  
