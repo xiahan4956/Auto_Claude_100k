@@ -20,6 +20,7 @@ from ..base import ChatSequence, Message
 from ..providers.openai import OPEN_AI_CHAT_MODELS
 from .token_counter import *
 from autogpt.llm.utils.claude import *
+from autogpt.llm.utils.bard import bard_chat
 import json
 
 def metered(func):
@@ -240,12 +241,13 @@ def create_chat_completion(
 
 
 
-    pmt = pmt_gpt_to_claude(prompt.raw())
-    resp = sendReq(pmt)  
 
-    if "without seeking user assistance" in str(pmt): # 常规的提问
+    # resp = sendReq(pmt)  
+    resp = bard_chat(str(prompt.raw()))
+
+    if "without seeking user assistance" in str(prompt.raw()): # fix json
         # fix json error  
-        resp = fix_claude_json(resp)
+        resp = ai_fix_json(resp)
 
     print("==============resp==============")
     print(resp)

@@ -4,12 +4,6 @@ OPEN_AI_CHAT_MODELS = {
     info.name: info
     for info in [
         ChatModelInfo(
-            name="claude-1.3-100k",
-            prompt_token_cost=0,
-            completion_token_cost=0,
-            max_tokens=1000000,
-        ),
-        ChatModelInfo(
             name="gpt-3.5-turbo-0301",
             prompt_token_cost=0.0015,
             completion_token_cost=0.002,
@@ -25,7 +19,7 @@ OPEN_AI_CHAT_MODELS = {
             name="gpt-3.5-turbo-16k-0613",
             prompt_token_cost=0.003,
             completion_token_cost=0.004,
-            max_tokens=100000,
+            max_tokens=8192,
         ),
         ChatModelInfo(
             name="gpt-4-0314",
