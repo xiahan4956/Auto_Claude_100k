@@ -1,28 +1,42 @@
-"""This is an Auto-GPT plugin to allow Auto-GPT to use Bing AI."""
-from typing import Any, Dict, List, Optional, Tuple, TypeVar, TypedDict
+"""Telegram controller bot integration using python-telegram-bot."""
 import os
+import re
+from typing import Any, Dict, List, Optional, Tuple, TypedDict, TypeVar
+
 from auto_gpt_plugin_template import AutoGPTPluginTemplate
-import asyncio
+
+from .telegram_chat import TelegramUtils
 
 PromptGenerator = TypeVar("PromptGenerator")
+
 
 class Message(TypedDict):
     role: str
     content: str
 
-class BingAI(AutoGPTPluginTemplate):
+
+def remove_color_codes(s: str) -> str:
+    ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")
+    return ansi_escape.sub("", s)
+
+
+class AutoGPTTelegram(AutoGPTPluginTemplate):
     """
-    This is an Auto-GPT plugin to allow Auto-GPT to use Bing AI.
+    Telegram controller bot integration using python-telegram-bot.
     """
 
     def __init__(self):
         super().__init__()
-        self._name = "BingAI"
-        self._version = "0.1.0"
-        self._description = "This is an Auto-GPT plugin to allow Auto-GPT to use Bing AI."
-        self.cookies_path = os.getenv("BINGAI_COOKIES_PATH")
-        self.bing_mode = os.getenv("BINGAI_MODE")
-
+        self._name = "Auto-GPT-Telegram"
+        self._version = "0.2.0"
+        self._description = (
+            "This integrates a Telegram chat bot with your autogpt instance."
+        )
+        self.telegram_api_key = os.getenv("TELEGRAM_API_KEY", None)
+        self.telegram_chat_id = os.getenv("TELEGRAM_CHAT_ID", None)
+        self.telegram_utils = TelegramUtils(
+            chat_id=self.telegram_chat_id, api_key=self.telegram_api_key
+        )
 
     def can_handle_on_response(self) -> bool:
         """This method is called to check that the plugin can
@@ -42,7 +56,7 @@ class BingAI(AutoGPTPluginTemplate):
 
         Returns:
             bool: True if the plugin can handle the post_prompt method."""
-        return True
+        return False
 
     def post_prompt(self, prompt: PromptGenerator) -> PromptGenerator:
         """This method is called just after the generate_prompt is called,
@@ -54,39 +68,8 @@ class BingAI(AutoGPTPluginTemplate):
         Returns:
             PromptGenerator: The prompt generator.
         """
+        pass
 
-        from .bing_ai import(
-            getResponse
-        )
-
-        def sync_get_response(question: str) -> Optional[str]:
-            """Get a response from BingAI synchronously.
-
-            This function sends a question to BingAI and retrieves the response
-            text in a synchronous manner by using an event loop to run the asynchronous
-            getResponse function. In case of any errors, it returns the error message
-            as a string.
-
-            Args:
-                question (str): The question to ask BingAI.
-
-            Returns:
-                Optional[str]: The response text from BingAI, or the error message in case of errors.
-            """
-            loop = asyncio.get_event_loop()
-            return loop.run_until_complete(getResponse(question))
-
-        if self.cookies_path is not None and self.bing_mode is not None:
-            prompt.add_resource("Access to a highly intelligent AI based on GPT-4, to be used whenever single questions or advice is needed. This AI is able to research information online by itself. This can be accessed via the ask_genius_bing command.")
-            prompt.add_command(
-                "ask_genius_bing", "Ask Bing AI", {"question":"<question>"}, sync_get_response
-            )
-
-        else:
-            print("BingAI plugin not loaded because the cookies path has not been set or the BingAI mode has not been set.")
-
-        return prompt
-        
     def can_handle_on_planning(self) -> bool:
         """This method is called to check that the plugin can
         handle the on_planning method.
@@ -256,63 +239,45 @@ class BingAI(AutoGPTPluginTemplate):
         """
         pass
 
-    def can_handle_text_embedding(
-        self, text: str
-    ) -> bool:
-        """This method is called to check that the plugin can
-          handle the text_embedding method.
-        Args:
-            text (str): The text to be convert to embedding.
-          Returns:
-              bool: True if the plugin can handle the text_embedding method."""
+    def can_handle_text_embedding(self, text: str) -> bool:
         return False
     
-    def handle_text_embedding(
-        self, text: str
-    ) -> list:
-        """This method is called when the chat completion is done.
-        Args:
-            text (str): The text to be convert to embedding.
-        Returns:
-            list: The text embedding.
-        """
+    def handle_text_embedding(self, text: str) -> list:
         pass
-
+    
     def can_handle_user_input(self, user_input: str) -> bool:
-        """This method is called to check that the plugin can
-        handle the user_input method.
-
-        Args:
-            user_input (str): The user input.
-
-        Returns:
-            bool: True if the plugin can handle the user_input method."""
-        return False
+        return True
 
     def user_input(self, user_input: str) -> str:
-        """This method is called to request user input to the user.
-
-        Args:
-            user_input (str): The question or prompt to ask the user.
-
-        Returns:
-            str: The user input.
-        """
-
-        pass
-
+        user_input = remove_color_codes(user_input)
+        # if the user_input is too long, shorten it
+        try:
+            return self.telegram_utils.ask_user(prompt=user_input)
+        except Exception as e:
+            print(e)
+            print("Error sending message to telegram")
+            return "s"
+        
     def can_handle_report(self) -> bool:
         """This method is called to check that the plugin can
         handle the report method.
 
         Returns:
             bool: True if the plugin can handle the report method."""
-        return False
+        return True
 
     def report(self, message: str) -> None:
-        """This method is called to report a message to the user.
+        message = remove_color_codes(message)
+        # if the message is too long, shorten it
+        try :
+            self.telegram_utils.send_message(message=message)
+        except Exception as e:
+            print(e)
+            print("Error sending message to telegram")
+            
 
-        Args:
-            message (str): The message to report.
-        """
+    def can_handle_text_embedding(self, text: str) -> bool:
+        return False
+
+    def handle_text_embedding(self, text: str) -> list:
         pass

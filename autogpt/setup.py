@@ -30,7 +30,7 @@ def prompt_user() -> AIConfig:
 
     # Construct the prompt
     logger.typewriter_log(
-        "Welcome to Auto-GPT! ",
+        "Welcome to Auto-Claude! ",
         Fore.GREEN,
         "run with '--help' for more information.",
         speak_text=True,
@@ -45,7 +45,7 @@ def prompt_user() -> AIConfig:
     )
 
     user_desire = utils.clean_input(
-        f"{Fore.LIGHTBLUE_EX}I want Auto-GPT to{Style.RESET_ALL}: "
+        f"{Fore.LIGHTBLUE_EX}I want Auto-Claude to{Style.RESET_ALL}: "
     )
 
     if user_desire == "":
@@ -97,11 +97,11 @@ def generate_aiconfig_manual() -> AIConfig:
 
     # Get AI Name from User
     logger.typewriter_log(
-        "Name your AI: ", Fore.GREEN, "For example, 'Entrepreneur-GPT'"
+        "Name your AI: ", Fore.GREEN, "For example, 'Entrepreneur-Claude'"
     )
     ai_name = utils.clean_input("AI Name: ")
     if ai_name == "":
-        ai_name = "Entrepreneur-GPT"
+        ai_name = "Entrepreneur-Claude"
 
     logger.typewriter_log(
         f"{ai_name} here!", Fore.LIGHTBLUE_EX, "I am at your service.", speak_text=True
