@@ -136,7 +136,29 @@ class TelegramUtils:
             ]
         )
 
-    def send_message(self, message):
+    def send_message(self, message:str):
+        
+        # skip
+        if "THOUGHTS:" in message:
+            return
+        if "REASONING:" in message:
+            return 
+        if "CRITICISM" in message:
+            return
+        if "PLAN" in message:
+            return        
+        if "SPEAK" in message:
+            return        
+        if message.startswith("- "):
+            return
+        if message.startswith("\n."):
+            return
+        if message.startswith("Using memory of type"):
+            return
+        if message.startswith("Using Browser"):
+            return
+        
+        
         try:
             loop = asyncio.get_running_loop()
         except RuntimeError as e:  # 'RuntimeError: There is no current event loop...'
