@@ -9,10 +9,13 @@ openai.api_key = CFG.openai_api_key
 
 MAX_TOKEN_ONCE = 100000
 CONTINUE_PROMPT = "... continue"
-import anthropic as anthropic
 
 
-def _sendReq(client, prompt, max_tokens_to_sample):
+from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
+
+
+
+def _sendReq(anthropic, prompt, max_tokens_to_sample):
     print("----------------request----------------")
     print(prompt)
     print("----------------request----------------\n")
@@ -21,10 +24,10 @@ def _sendReq(client, prompt, max_tokens_to_sample):
 
     for _ in range(5):
         try:
-            response = client.completion(
+            response = anthropic.completions.create(
                 prompt=prompt,
-                stop_sequences = [anthropic.HUMAN_PROMPT, anthropic.AI_PROMPT],
-                model="claude-1.3-100k",
+                stop_sequences = [HUMAN_PROMPT, AI_PROMPT],
+                model="claude-2",
                 max_tokens_to_sample=max_tokens_to_sample,
                 temperature = 0.3
             )
@@ -35,22 +38,20 @@ def _sendReq(client, prompt, max_tokens_to_sample):
     return response
 
 def sendReq(question, max_tokens_to_sample: int = MAX_TOKEN_ONCE):
+    anthropic = Anthropic(api_key = CFG.claude_api_key)
 
-
-    CFG = Config()
-    client = anthropic.Client(CFG.claude_api_key)
     prompt = f"{question} {anthropic.AI_PROMPT}"
 
-    response = _sendReq(client, prompt, max_tokens_to_sample)
-    data = response["completion"]
+    response = _sendReq(anthropic, prompt, max_tokens_to_sample)
+    data = response.completion
 
     return data
 
 def pmt_gpt_to_claude(question):
     question = str(question)[1:-1]
-    question = question.replace("{\'role\': \'system\', \'content\':","\n\nHuman:")
+    question = question.replace("{\'role\': \'system\', \'content\':","\n\nSYSTEM:")
     question = question.replace("{\'role\': \'user\', \'content\':","\n\nHuman:")
-    question = question.replace("{\'role\': \'assistant\', \'content\':","\n\n\Assistant:")
+    question = question.replace("{\'role\': \'assistant\', \'content\':","\n\nAssistant:")
     question = question.replace("\'}","")
     return question
 
