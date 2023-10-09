@@ -14,13 +14,11 @@ CONTINUE_PROMPT = "... continue"
 from anthropic import Anthropic, HUMAN_PROMPT, AI_PROMPT
 
 
-
 def _sendReq(anthropic, prompt, max_tokens_to_sample):
     print("----------------request----------------")
     print(prompt)
     print("----------------request----------------\n")
     print("the input words of claude: "+str(len(prompt)))
-
 
     for _ in range(5):
         try:

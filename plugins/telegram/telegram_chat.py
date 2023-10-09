@@ -157,7 +157,10 @@ class TelegramUtils:
             return
         if message.startswith("Using Browser"):
             return
-        
+        if message.startswith("SYSTEM: . Command google returned:"):
+            return
+        if len(message) > 500:
+            return
         
         try:
             loop = asyncio.get_running_loop()
